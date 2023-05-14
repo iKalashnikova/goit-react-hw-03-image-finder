@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Audio } from  'react-loader-spinner'
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import './ImageGallery.css';
 import { Button } from 'components/Button/Button';
@@ -13,7 +14,7 @@ export default class ImageGallery extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.searchText !== this.props.searchText) {
+    if (prevProps.searchText !== this.props.searchText ) {
       this.setState({ status: 'pending' });
 
       fetch(
@@ -35,34 +36,35 @@ export default class ImageGallery extends Component {
     }
   }
 
-  handleLoadMoreClick = () => {
-  this.setState(prevState => ({
+handleLoadMoreClick = () => {
+    this.setState(prevState => ({
     page: prevState.page + 1,
-    status: 'pending',
-  }));
+    // status: 'pending',
+    }));
 
-  fetch(
+    fetch(
     `https://pixabay.com/api/?key=36341058-58041bef9cd62d3470c4ef98b&q=${
-      this.props.searchText
+        this.props.searchText
     }&image_type=photo&per_page=12&page=${this.state.page + 1}`
-  )
+    )
     .then(res => {
-      if (res.ok) {
+        if (res.ok) {
         return res.json();
-      }
-      return Promise.reject(
+        }
+        return Promise.reject(
         new Error('Error loading images. Enter correct search')
-      );
+        );
     })
     .then(data => {
-      this.setState(prevState => ({
-        images: [...prevState.images, ...data.hits],
+        this.setState(prevState => ({
+        images: prevState.images.concat(data.hits),
         status: 'resolved',
-      }));
+
+          // images: [...prevState.images, ...data.hits],
+        }));
     })
     .catch(error => this.setState({ error, status: 'rejected' }));
 };
-
 
   render() {
     const { error, status } = this.state;
@@ -72,7 +74,15 @@ export default class ImageGallery extends Component {
     }
 
     if (status === 'pending') {
-      return <div>Loading...</div>;
+      return <div><Audio
+    height = "80"
+    width = "80"
+    radius = "9"
+    color = 'green'
+    ariaLabel = 'three-dots-loading'     
+    wrapperStyle
+    wrapperClass
+  /></div>;
     }
 
     console.log('status:', status);
