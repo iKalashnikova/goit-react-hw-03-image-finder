@@ -10,8 +10,8 @@ export default class Modal extends Component {
         const { largeImageURL, onClose } = this.props;
         
     return (
-      <div class="overlay" onClick={onClose}>
-        <div class="modal">
+      <div className="overlay" onClick={onClose}>
+        <div className="modal">
           <img src={largeImageURL} alt="" />
         </div>
       </div>
