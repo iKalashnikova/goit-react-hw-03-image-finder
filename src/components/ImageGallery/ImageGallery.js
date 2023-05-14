@@ -3,6 +3,7 @@ import { Audio } from  'react-loader-spinner'
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import './ImageGallery.css';
 import { Button } from 'components/Button/Button';
+import Modal from '../Modal/Modal'
 
 export default class ImageGallery extends Component {
   state = {
@@ -10,7 +11,8 @@ export default class ImageGallery extends Component {
     error: null,
     status: 'idle',
     page: 1,
-    query: '',
+      showModal: false,
+   largeImageURL: '',
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -66,8 +68,16 @@ handleLoadMoreClick = () => {
     .catch(error => this.setState({ error, status: 'rejected' }));
 };
 
+    toggleModal = () => {
+        this.setState(({showModal}) => ({showModal: !showModal,}))
+    }
+    
+    handleImageClick = largeImageURL => {
+    this.setState({ largeImageURL, showModal: true });
+  };
+    
   render() {
-    const { error, status } = this.state;
+    const { error, status, showModal } = this.state;
 
     if (status === 'idle') {
       return <div> Введите свой поиск в форму</div>;
@@ -75,14 +85,14 @@ handleLoadMoreClick = () => {
 
     if (status === 'pending') {
       return <div><Audio
-    height = "80"
-    width = "80"
-    radius = "9"
-    color = 'green'
-    ariaLabel = 'three-dots-loading'     
-    wrapperStyle
-    wrapperClass
-  /></div>;
+        height="80"
+        width="80"
+        radius="9"
+        color='green'
+        ariaLabel='three-dots-loading'
+        wrapperStyle={{ margin: 'auto' }}
+        wrapperClassName="my-audio-class"
+      /></div>;
     }
 
     console.log('status:', status);
@@ -94,15 +104,16 @@ handleLoadMoreClick = () => {
 
     if (status === 'resolved') {
       return (
-        <>
+          <>
+             {showModal && <Modal onClose={this.toggleModal} largeImageURL={this.state.largeImageURL} />}
           <ul className="gallery">
             {this.state.images.map(image => (
-              <ImageGalleryItem key={image.id} image={image} />
+              <ImageGalleryItem key={image.id} image={image} onClick={this.handleImageClick} />
             ))}
           </ul>
           {this.state.images.length > 0 && (
             <Button onClick={this.handleLoadMoreClick} />
-          )}
+              )}
         </>
       );
     }
