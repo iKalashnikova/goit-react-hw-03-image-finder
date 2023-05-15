@@ -17,7 +17,7 @@ export default class ImageGallery extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.searchText !== this.props.searchText ) {
-      this.setState({ status: 'pending' });
+      this.setState({ status: 'pending', page: 1 });
 
       fetch(
         `https://pixabay.com/api/?key=36341058-58041bef9cd62d3470c4ef98b&q=${this.props.searchText}&image_type=photo&per_page=12`
