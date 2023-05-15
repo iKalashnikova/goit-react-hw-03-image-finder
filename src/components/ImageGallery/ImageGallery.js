@@ -32,7 +32,7 @@ export default class ImageGallery extends Component {
           );
         })
         .then(data => {
-          this.setState({ images: data.hits, status: 'resolved' });
+          this.setState({ images: data.hits, total: data.totalHits, status: 'resolved' });
         })
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
@@ -77,7 +77,7 @@ handleLoadMoreClick = () => {
   };
     
   render() {
-    const { error, status, showModal } = this.state;
+    const { error, status, showModal, total, images, page } = this.state;
 
     if (status === 'idle') {
       return <div> Введите свой поиск в форму</div>;
@@ -111,7 +111,7 @@ handleLoadMoreClick = () => {
               <ImageGalleryItem key={image.id} image={image} onClick={this.handleImageClick} />
             ))}
           </ul>
-          {this.state.images.length > 0 && (
+          {images.length > 0 && Math.ceil(total/12) !== page &&(
             <Button onClick={this.handleLoadMoreClick} />
               )}
         </>
